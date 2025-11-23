@@ -1,7 +1,8 @@
-from typing import List, Dict, Any, Tuple
+from typing import Any, Dict, List, Tuple
+
 import spacy
-from spacy.tokens import Doc
 from loguru import logger
+from spacy.tokens import Doc
 
 # Load the spaCy model. It's efficient to load it once and reuse it.
 try:

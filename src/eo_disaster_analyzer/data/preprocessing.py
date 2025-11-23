@@ -1,4 +1,5 @@
-from typing import Tuple, List, Dict, Any
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
 import rasterio
 from loguru import logger
@@ -20,7 +21,9 @@ def load_raster(path: str) -> Tuple[np.ndarray, Dict[str, Any]]:
         with rasterio.open(path) as dataset:
             image = dataset.read()
             profile = dataset.profile
-            logger.info(f"Loaded raster '{path}' with shape {image.shape} and CRS '{profile['crs']}'.")
+            logger.info(
+                f"Loaded raster '{path}' with shape {image.shape} and CRS '{profile['crs']}'."
+            )
             return image, profile
     except rasterio.errors.RasterioIOError as e:
         logger.error(f"Could not read raster file at '{path}': {e}")
@@ -75,7 +78,9 @@ def create_patches(
         A list of image patches, each as a NumPy array.
     """
     if image.ndim != 3:
-        raise ValueError(f"Input image must be 3-dimensional (bands, height, width), but got {image.ndim} dims.")
+        raise ValueError(
+            f"Input image must be 3-dimensional (bands, height, width), but got {image.ndim} dims."
+        )
 
     _, height, width = image.shape
     patches = []

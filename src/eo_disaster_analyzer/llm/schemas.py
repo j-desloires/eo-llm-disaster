@@ -1,4 +1,5 @@
 from typing import List, Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -6,6 +7,7 @@ class Location(BaseModel):
     """
     A structured representation of a detected location.
     """
+
     name: str = Field(..., description="Name of the city/region/country mentioned.")
     country: Optional[str] = Field(
         None, description="The country if known or inferred."
@@ -25,9 +27,7 @@ class DisasterEvent(BaseModel):
     """
 
     # Core Information
-    title: str = Field(
-        ..., description="The original title of the news article."
-    )
+    title: str = Field(..., description="The original title of the news article.")
 
     # Classification
     is_disaster_related: bool = Field(
@@ -45,13 +45,13 @@ class DisasterEvent(BaseModel):
     # Locations (structured instead of plain strings)
     locations: List[Location] = Field(
         default_factory=list,
-        description="List of geographic locations mentioned in the article."
+        description="List of geographic locations mentioned in the article.",
     )
 
     # Summary sentence
     summary: str = Field(
         ...,
-        description="Short summary of the event, including the impact and location."
+        description="Short summary of the event, including the impact and location.",
     )
 
     # Optional metadata

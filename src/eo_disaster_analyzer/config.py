@@ -9,8 +9,8 @@ class Settings(BaseSettings):
     """Manages application-wide settings."""
 
     OPENAI_API_KEY: SecretStr
-    #sentinelhub_client_id: str
-    #sentinelhub_client_secret: str
+    # sentinelhub_client_id: str
+    # sentinelhub_client_secret: str
 
     # Find the project root (which is 3 levels up from this file)
     # and construct the path to the .env file. This makes loading the .env
@@ -19,9 +19,10 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_file=_env_path,
-        env_file_encoding='utf-8',
-        case_sensitive=False  # Allows OPENAI_API_KEY or openai_api_key
+        env_file_encoding="utf-8",
+        case_sensitive=False,  # Allows OPENAI_API_KEY or openai_api_key
     )
+
 
 @lru_cache
 def get_settings() -> Settings:

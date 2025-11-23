@@ -8,12 +8,13 @@ from langchain_openai import ChatOpenAI
 from loguru import logger
 
 from eo_disaster_analyzer.config import get_settings
-from eo_disaster_analyzer.data.providers import fetch_disaster_news
-from eo_disaster_analyzer.llm.prompts import (ANALYZE_ARTICLE_PROMPT,
-                                               CLASSIFY_RELEVANCE_PROMPT)
-from eo_disaster_analyzer.llm.schemas import DisasterEvent
 from eo_disaster_analyzer.data.extractors import extract_entities_from_text
-
+from eo_disaster_analyzer.data.providers import fetch_disaster_news
+from eo_disaster_analyzer.llm.prompts import (
+    ANALYZE_ARTICLE_PROMPT,
+    CLASSIFY_RELEVANCE_PROMPT,
+)
+from eo_disaster_analyzer.llm.schemas import DisasterEvent
 
 # ------------------------------------------------------------------------------
 # LLM INITIALIZATION
@@ -51,6 +52,7 @@ def get_llm_client(model_name: str = "gpt-4o-mini") -> ChatOpenAI:
 # ------------------------------------------------------------------------------
 # ARTICLE ANALYSIS
 # ------------------------------------------------------------------------------
+
 
 def analyze_article_with_llm(article: Dict[str, Any]) -> DisasterEvent:
     """
@@ -100,6 +102,7 @@ def analyze_article_with_llm(article: Dict[str, Any]) -> DisasterEvent:
 # NEWS ANALYSIS PIPELINE
 # ------------------------------------------------------------------------------
 
+
 def run_news_analysis_pipeline(
     query: str = "flood OR flood disaster OR flooding",
     period: str = "7d",
@@ -134,9 +137,7 @@ def run_news_analysis_pipeline(
     # 2. Perform fast pre-filtering
     logger.info(f"Fetched {len(articles)} articles. Starting cheap pre-filtering...")
     llm = get_llm_client()
-    relevance_chain = (
-        CLASSIFY_RELEVANCE_PROMPT | llm | StrOutputParser()
-    )
+    relevance_chain = CLASSIFY_RELEVANCE_PROMPT | llm | StrOutputParser()
 
     try:
         relevance_results = relevance_chain.batch(
@@ -186,7 +187,9 @@ def run_news_analysis_pipeline(
     paired_results = zip(disaster_events, relevant_articles)
 
     confirmed_pairs = [
-        (event, article) for event, article in paired_results if event.is_disaster_related
+        (event, article)
+        for event, article in paired_results
+        if event.is_disaster_related
     ]
 
     logger.success(
