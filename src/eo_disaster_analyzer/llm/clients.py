@@ -10,7 +10,7 @@ from loguru import logger
 from eo_disaster_analyzer.config import get_settings
 from eo_disaster_analyzer.data.providers import fetch_disaster_news
 from eo_disaster_analyzer.llm.prompts import (ANALYZE_ARTICLE_PROMPT,
-                                               CLASSIFY_RElevance_PROMPT)
+                                               CLASSIFY_RELEVANCE_PROMPT)
 from eo_disaster_analyzer.llm.schemas import DisasterEvent
 from eo_disaster_analyzer.data.extractors import extract_entities_from_text
 
@@ -32,7 +32,7 @@ def get_llm_client(model_name: str = "gpt-4o-mini") -> ChatOpenAI:
         return _LLM_CACHE
 
     settings = get_settings()
-    api_key = settings.openai_api_key.get_secret_value()
+    api_key = settings.OPENAI_API_KEY.get_secret_value()
 
     if not api_key:
         raise ValueError("Missing OPENAI_API_KEY in environment.")
@@ -41,7 +41,7 @@ def get_llm_client(model_name: str = "gpt-4o-mini") -> ChatOpenAI:
 
     _LLM_CACHE = ChatOpenAI(
         model=model_name,
-        openai_api_key=api_key,
+        api_key=api_key,
         temperature=0.0,
     )
 
@@ -51,6 +51,49 @@ def get_llm_client(model_name: str = "gpt-4o-mini") -> ChatOpenAI:
 # ------------------------------------------------------------------------------
 # ARTICLE ANALYSIS
 # ------------------------------------------------------------------------------
+
+def analyze_article_with_llm(article: Dict[str, Any]) -> DisasterEvent:
+    """
+    Extracts structured disaster event information from a news article
+    using NLP preprocessing + LLM structured extraction.
+
+    Args:
+        article: A dictionary with fields like 'title' and 'summary'.
+
+    Returns:
+        A DisasterEvent Pydantic object.
+    """
+    title = article.get("title", "")
+    summary = article.get("summary", "")
+    logger.info(f"Analyzing article: {title[:80]}...")
+
+    # 1. Pre-process with spaCy to get entities
+    text_to_analyze = f"{title}. {summary}"
+    entities = extract_entities_from_text(text_to_analyze)
+
+    # 2. Prepare LLM and chain for structured output
+    llm = get_llm_client()
+    structured_llm = llm.with_structured_output(DisasterEvent)
+    analysis_chain = ANALYZE_ARTICLE_PROMPT | structured_llm
+
+    # 3. Invoke the chain with the combined article and entity data
+    try:
+        result = analysis_chain.invoke({**article, **entities})
+        logger.success(f"✓ Extracted disaster event: {result.disaster_type}")
+        return result
+
+    except Exception as e:
+        logger.error(f"LLM analysis failed for article '{title}': {e}")
+        # Return a default non-disaster event on failure
+        return DisasterEvent(
+            title=title,
+            summary=summary,
+            is_disaster_related=False,
+            disaster_type=None,
+            locations=[],
+            source_url=article.get("link"),
+            confidence=0.0,
+        )
 
 
 # ------------------------------------------------------------------------------

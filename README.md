@@ -116,15 +116,3 @@ http://127.0.0.1:8000/docs
 ## License
 
 MIT License — feel free to use, modify, and distribute.
-
----
-
-# 🔎 Summary of Improvements Made
-
-* Updated package name (`eo_disaster_analyzer`).
-* Replaced outdated `setup.py` structure with modern `src/` layout.
-* Cleaned up the feature list for clarity and realism.
-* Improved installation instructions (PEP 621-compatible).
-* Added usage examples (CLI + API).
-* Removed unused references (e.g., `requirements.txt`, `setup.py`).
-* More consistent, professional formatting.

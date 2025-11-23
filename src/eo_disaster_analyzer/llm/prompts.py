@@ -1,4 +1,4 @@
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 CLASSIFY_RELEVANCE_PROMPT = PromptTemplate.from_template(
     """

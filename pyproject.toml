@@ -52,6 +52,9 @@ ml = [
 
 news = [
     "feedparser>=6.0",     # Explicitly force a modern version of feedparser
+    "requests",
+    "beautifulsoup4",
+    "dateparser",
     "spacy>=3.5",
 ]
 
@@ -78,6 +81,9 @@ all = [
     "torchvision",
     "Pillow",
     "feedparser>=6.0",
+    "requests",
+    "beautifulsoup4",
+    "dateparser",
     "spacy>=3.5",
     "fastapi",
     "uvicorn[standard]",
