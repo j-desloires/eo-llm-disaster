@@ -24,6 +24,11 @@ class DisasterEvent(BaseModel):
     Fully compatible with LangChain structured outputs.
     """
 
+    # Core Information
+    title: str = Field(
+        ..., description="The original title of the news article."
+    )
+
     # Classification
     is_disaster_related: bool = Field(
         ..., description="Whether this article is truly about a natural disaster."
@@ -56,7 +61,12 @@ class DisasterEvent(BaseModel):
     casualties: Optional[str] = Field(
         None, description="Reported casualties or injuries, if any."
     )
-    sources: List[str] = Field(
-        default_factory=list,
-        description="Articles or URLs used as sources (optional)."
+    confidence: float = Field(
+        ...,
+        description="Confidence score (0.0 to 1.0) on whether this is a real, specific disaster event.",
+        ge=0.0,
+        le=1.0,
+    )
+    source_url: Optional[str] = Field(
+        None, description="The source URL of the news article."
     )

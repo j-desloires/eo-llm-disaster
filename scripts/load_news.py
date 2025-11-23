@@ -36,12 +36,13 @@ def display_results(confirmed_events: List[tuple[DisasterEvent, dict[str, Any]]]
             panel_content += f"[bold]Date:[/bold] {event.event_date}\n"
         if event.casualties:
             panel_content += f"[bold]Casualties:[/bold] {event.casualties}\n"
-        panel_content += f"[bold]Source:[/bold] [link={article.get('link')}]{article.get('link')}[/link]"
+        if event.source_url:
+            panel_content += f"[bold]Source:[/bold] [link={event.source_url}]{event.source_url}[/link]"
 
         console.print(
             Panel(
                 panel_content,
-                title=f"[bold cyan]Event {i}: {article.get('title', 'Untitled')}[/bold cyan]",
+                title=f"[bold cyan]Event {i}: {event.title}[/bold cyan]",
                 border_style="blue",
                 expand=False,
             )

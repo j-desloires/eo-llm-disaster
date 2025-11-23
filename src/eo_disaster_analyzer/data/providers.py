@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
-from pygooglenews import GoogleNews
 from loguru import logger
 
+from .pygooglenews import GoogleNews
 
 def fetch_disaster_news(
     query: str = "flood OR earthquake OR wildfire OR hurricane disaster",
